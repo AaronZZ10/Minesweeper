@@ -1,10 +1,8 @@
-
-
 # 🧨 Minesweeper (React + Tailwind)
 
 A modern, responsive **Minesweeper** game built with **React** and **Tailwind CSS**, designed to work seamlessly on both desktop and mobile devices.
 
----
+## 🌐 **Live Demo:** [Link](https://minesweeper-five-chi.vercel.app)
 
 ## 🎮 Features
 
@@ -24,20 +22,24 @@ A modern, responsive **Minesweeper** game built with **React** and **Tailwind CS
 ## 🛠️ Setup
 
 ### 1️⃣ Clone the Repository
+
 ```bash
 git clone https://github.com/yourusername/minesweeper.git
 cd minesweeper
 ```
 
 ### 2️⃣ Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### 3️⃣ Run the Game
+
 ```bash
 npm start
 ```
+
 Then open your browser to **http://localhost:3000**.
 
 ---
