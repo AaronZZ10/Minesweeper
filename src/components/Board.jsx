@@ -19,13 +19,12 @@ export default function Board({
                   : difficulty === "normal"
                   ? "w-7 h-7"
                   : "w-6 h-6"
-              } flex items-center justify-center border border-gray-300 text-sm font-bold
+              } flex items-center justify-center border border-gray-400 text-sm font-bold
                   ${
                     cell.revealed
-                      ? "bg-gray-200"
-                      : "bg-gray-400 hover:bg-gray-300"
+                      ? "bg-gray-100"
+                      : "bg-gray-200 hover:bg-gray-300 hover:cursor-pointer"
                   }
-                  ${cell.flagged ? "bg-yellow-300" : ""}
                   ${
                     cell.revealed || gameOver || win
                       ? "pointer-events-none"
@@ -45,7 +44,7 @@ export default function Board({
               onContextMenu={(e) => toggleFlag(e, rIdx, cIdx)}
             >
               {cell.revealed && !cell.mine && cell.count > 0 && cell.count}
-              {cell.flagged && !gameOver && "🚩"}
+              {cell.flagged && !gameOver && !cell.revealed && "🚩"}
               {cell.mine && gameOver && "💣"}
             </div>
           ))}

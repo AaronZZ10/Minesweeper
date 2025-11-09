@@ -1,4 +1,4 @@
-export default function GameControls({ gameOver, win, remainingMines, difficulty, setDifficulty, resetGame }) {
+export default function GameControls({ gameOver, win, remainingFlags, difficulty, setDifficulty, resetGame }) {
   return (
     <div className="flex flex-col items-center gap-2 p-3 max-w-xl">
       {/* Top row: Status + Mine count */}
@@ -9,7 +9,7 @@ export default function GameControls({ gameOver, win, remainingMines, difficulty
           {!gameOver && !win && <div className="text-gray-700">🙂 Playing</div>}
         </div>
         <div className="text-gray-700 font-medium">
-          💣 {remainingMines} left
+          🚩 {remainingFlags} left
         </div>
       </div>
 

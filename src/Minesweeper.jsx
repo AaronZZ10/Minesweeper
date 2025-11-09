@@ -63,7 +63,8 @@ export default function Minesweeper() {
     if (gameOver) return;
     const newBoard = board.map((row) => row.map((cell) => ({ ...cell })));
     const cell = newBoard[r][c];
-    if (!cell.revealed) cell.flagged = !cell.flagged;
+    if (cell.revealed) return;
+    cell.flagged = !cell.flagged;
     setBoard(newBoard);
   };
 
@@ -89,9 +90,7 @@ export default function Minesweeper() {
     setWin(false);
   }, [difficulty]);
 
-  const remainingMines = board
-    .flat()
-    .filter((c) => c.mine && !c.flagged).length;
+  const remainingFlags = MINES - board.flat().filter((c) => c.flagged).length;
 
   return (
     <div className="flex flex-col items-center gap-4 p-4 text-center select-none">
@@ -99,7 +98,7 @@ export default function Minesweeper() {
       <GameControls
         gameOver={gameOver}
         win={win}
-        remainingMines={remainingMines}
+        remainingFlags={remainingFlags}
         difficulty={difficulty}
         setDifficulty={setDifficulty}
         resetGame={resetGame}
