@@ -20,28 +20,42 @@ export default function Board({
                   ? "w-7 h-7"
                   : "w-6 h-6"
               } flex items-center justify-center border border-gray-400 text-sm font-bold
-                  ${
-                    cell.revealed
-                      ? "bg-gray-100"
-                      : "bg-gray-200 hover:bg-gray-300 hover:cursor-pointer"
-                  }
-                  ${
-                    cell.revealed || gameOver || win
-                      ? "pointer-events-none"
-                      : ""
-                  }
-                  ${cell.mine && gameOver ? "bg-red-500 text-white" : ""}`}
+                ${
+                  cell.revealed
+                    ? "bg-gray-100"
+                    : "bg-gray-200 hover:bg-gray-300 hover:cursor-pointer"
+                }
+                ${
+                  cell.revealed || gameOver || win
+                    ? "pointer-events-none"
+                    : ""
+                }
+                ${cell.mine && gameOver ? "bg-red-500 text-white" : ""}`}
+              // 👇 Fix long press vs tap
               onTouchStart={(e) => {
                 e.persist();
-                const timeout = setTimeout(
-                  () => toggleFlag(e, rIdx, cIdx),
-                  500
-                );
+                e.preventDefault(); // prevent Safari "ghost click"
+                e.target.longPressTriggered = false;
+                const timeout = setTimeout(() => {
+                  toggleFlag(e, rIdx, cIdx);
+                  e.target.longPressTriggered = true;
+                }, 500);
                 e.target.longPressTimeout = timeout;
               }}
-              onTouchEnd={(e) => clearTimeout(e.target.longPressTimeout)}
-              onClick={() => revealCell(rIdx, cIdx)}
-              onContextMenu={(e) => toggleFlag(e, rIdx, cIdx)}
+              onTouchEnd={(e) => {
+                clearTimeout(e.target.longPressTimeout);
+                if (!e.target.longPressTriggered) {
+                  revealCell(rIdx, cIdx);
+                }
+              }}
+              // 👇 Only for desktop users
+              onClick={(e) => {
+                if (!("ontouchstart" in window)) revealCell(rIdx, cIdx);
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                toggleFlag(e, rIdx, cIdx);
+              }}
             >
               {cell.revealed && !cell.mine && cell.count > 0 && cell.count}
               {cell.flagged && !gameOver && !cell.revealed && "🚩"}
