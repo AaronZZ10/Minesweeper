@@ -132,12 +132,24 @@ export default function Minesweeper() {
   };
 
   useEffect(() => {
+    // If a saved board exists AND matches the difficulty, load it instead of resetting
+    const saved = localStorage.getItem("savedBoard");
+    const savedDiff = localStorage.getItem("savedDifficulty");
+
+    if (saved && savedDiff === difficulty) {
+      try {
+        setBoard(JSON.parse(saved));
+        setGameOver(false);
+        setWin(false);
+        return;
+      } catch {}
+    }
+
+    // Otherwise, start a new game normally
     const { rows, cols, mines } = DIFFICULTIES[difficulty];
     setBoard(createBoard(rows, cols, mines));
     setGameOver(false);
     setWin(false);
-    localStorage.removeItem("savedBoard");
-    localStorage.removeItem("savedDifficulty");
     setTime(0);
     setTimerRunning(false);
   }, [difficulty]);
