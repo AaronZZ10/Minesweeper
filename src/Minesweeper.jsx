@@ -4,14 +4,53 @@ import { createBoard, DIFFICULTIES } from "./gameUtils";
 import GameControls from "./components/GameControls";
 
 export default function Minesweeper() {
-  const [difficulty, setDifficulty] = useState("easy");
+  const [difficulty, setDifficulty] = useState(localStorage.getItem("difficulty") || "easy");
   const { rows: ROWS, cols: COLS, mines: MINES } = DIFFICULTIES[difficulty];
-  const [board, setBoard] = useState(() => createBoard(ROWS, COLS, MINES));
+  const [board, setBoard] = useState(() => {
+    const saved = localStorage.getItem("savedBoard");
+    const savedDiff = localStorage.getItem("savedDifficulty");
+    if (saved && savedDiff === difficulty) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return createBoard(ROWS, COLS, MINES);
+      }
+    }
+    return createBoard(ROWS, COLS, MINES);
+  });
   const [gameOver, setGameOver] = useState(false);
   const [win, setWin] = useState(false);
+  const [time, setTime] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(false);
+
+  useEffect(() => {
+    if (!gameOver && !win) {
+      localStorage.setItem("savedBoard", JSON.stringify(board));
+      localStorage.setItem("savedDifficulty", difficulty);
+    }
+    if (gameOver || win) {
+      localStorage.removeItem("savedBoard");
+      localStorage.removeItem("savedDifficulty");
+    }
+  }, [board, gameOver, win, difficulty]);
+
+  useEffect(() => {
+    localStorage.setItem("difficulty", difficulty);
+  }, [difficulty]);
+
+  useEffect(() => {
+    let interval = null;
+    if (timerRunning) {
+      interval = setInterval(() => {
+        setTime((t) => t + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timerRunning]);
 
   const revealCell = (r, c) => {
     if (gameOver) return;
+    if (!timerRunning) setTimerRunning(true);
     const newBoard = board.map((row) => row.map((cell) => ({ ...cell })));
     const cell = newBoard[r][c];
 
@@ -23,6 +62,8 @@ export default function Minesweeper() {
 
     // if mine -> game over
     if (cell.mine) {
+      setTimerRunning(false);
+      setTime(0);
       setGameOver(true);
       setBoard(newBoard);
       return;
@@ -72,7 +113,10 @@ export default function Minesweeper() {
     if (!gameOver) {
       const unrevealed = board.flat().filter((c) => !c.revealed);
       const minesLeft = board.flat().filter((c) => c.mine && !c.revealed);
-      if (unrevealed.length === minesLeft.length) setWin(true);
+      if (unrevealed.length === minesLeft.length) {
+        setWin(true);
+        setTimerRunning(false);
+      }
     }
   }, [board, gameOver]);
 
@@ -81,6 +125,10 @@ export default function Minesweeper() {
     setBoard(createBoard(rows, cols, mines));
     setGameOver(false);
     setWin(false);
+    localStorage.removeItem("savedBoard");
+    localStorage.removeItem("savedDifficulty");
+    setTime(0);
+    setTimerRunning(false);
   };
 
   useEffect(() => {
@@ -88,6 +136,10 @@ export default function Minesweeper() {
     setBoard(createBoard(rows, cols, mines));
     setGameOver(false);
     setWin(false);
+    localStorage.removeItem("savedBoard");
+    localStorage.removeItem("savedDifficulty");
+    setTime(0);
+    setTimerRunning(false);
   }, [difficulty]);
 
   const remainingFlags = MINES - board.flat().filter((c) => c.flagged).length;
@@ -102,6 +154,7 @@ export default function Minesweeper() {
         difficulty={difficulty}
         setDifficulty={setDifficulty}
         resetGame={resetGame}
+        time={time}
       />
       <Board
         board={board}

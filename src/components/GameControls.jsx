@@ -1,4 +1,4 @@
-export default function GameControls({ gameOver, win, remainingFlags, difficulty, setDifficulty, resetGame }) {
+export default function GameControls({ gameOver, win, remainingFlags, difficulty, setDifficulty, resetGame, time }) {
   return (
     <div className="flex flex-col items-center gap-2 p-3 max-w-xl">
       {/* Top row: Status + Mine count */}
@@ -10,6 +10,9 @@ export default function GameControls({ gameOver, win, remainingFlags, difficulty
         </div>
         <div className="text-gray-700 font-medium">
           🚩 {remainingFlags} left
+        </div>
+        <div className="text-gray-700 font-medium">
+          ⏱ {time}s
         </div>
       </div>
 
