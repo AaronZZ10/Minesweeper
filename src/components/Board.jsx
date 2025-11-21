@@ -7,8 +7,7 @@ export default function Board({
   toggleFlag,
   lastClicked,
 }) {
-  const smallscreen =
-    typeof window !== "undefined" && window.innerWidth < 600;
+  const smallscreen = typeof window !== "undefined" && window.innerWidth < 600;
 
   return (
     <div
@@ -27,8 +26,8 @@ export default function Board({
                   ? "w-8 h-8"
                   : difficulty === "normal"
                   ? "w-7 h-7"
-                  : smallscreen?
-                  "w-5 h-5"
+                  : smallscreen
+                  ? "w-5 h-5"
                   : "w-6 h-6"
               } flex items-center justify-center border border-gray-400 text-sm font-bold
                 ${
