@@ -1,7 +1,24 @@
 import { useState, useEffect, useCallback } from "react";
 import Board from "./components/Board";
-import { createBoard, DIFFICULTIES } from "./gameUtils";
+import { createBoard } from "./gameUtils";
 import GameControls from "./components/GameControls";
+const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 600;
+
+const DIFFICULTIES = {
+  easy: isSmallScreen
+    ? { rows: 9, cols: 9, mines: 10 }
+    : { rows: 9, cols: 9, mines: 10 },
+  normal: isSmallScreen
+    ? { rows: 18, cols: 14, mines: 40 } // swapped
+    : { rows: 14, cols: 18, mines: 40 },
+  hard: isSmallScreen
+    ? { rows: 24, cols: 18, mines: 99 } // swapped
+    : { rows: 18, cols: 24, mines: 99 },
+  asian: isSmallScreen
+    ? { rows: 40, cols: 25, mines: 250 } // swapped
+    : { rows: 25, cols: 40, mines: 250 },
+};
+
 
 export default function Minesweeper() {
   const [difficulty, setDifficulty] = useState(
