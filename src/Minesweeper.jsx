@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Board from "./components/Board";
 import { createBoard, DIFFICULTIES } from "./gameUtils";
 import GameControls from "./components/GameControls";
 
 export default function Minesweeper() {
-  const [difficulty, setDifficulty] = useState(localStorage.getItem("difficulty") || "easy");
+  const [difficulty, setDifficulty] = useState(
+    localStorage.getItem("difficulty") || "easy"
+  );
   const { rows: ROWS, cols: COLS, mines: MINES } = DIFFICULTIES[difficulty];
   const [board, setBoard] = useState(() => {
     const saved = localStorage.getItem("savedBoard");
@@ -20,7 +22,11 @@ export default function Minesweeper() {
   });
   const [gameOver, setGameOver] = useState(false);
   const [win, setWin] = useState(false);
-  const [time, setTime] = useState(localStorage.getItem("savedBoard") ? parseInt(localStorage.getItem("savedTime")) || 0 : 0);
+  const [time, setTime] = useState(
+    localStorage.getItem("savedBoard")
+      ? parseInt(localStorage.getItem("savedTime")) || 0
+      : 0
+  );
   const [timerRunning, setTimerRunning] = useState(false);
   const [lastClicked, setLastClicked] = useState(null);
 
@@ -132,16 +138,27 @@ export default function Minesweeper() {
     }
   }, [board, gameOver]);
 
-  const resetGame = () => {
-    const { rows, cols, mines } = DIFFICULTIES[difficulty];
-    setBoard(createBoard(rows, cols, mines));
-    setGameOver(false);
-    setWin(false);
-    localStorage.removeItem("savedBoard");
-    localStorage.removeItem("savedDifficulty");
-    setTime(0);
-    setTimerRunning(false);
-  };
+  const resetGame = useCallback(
+    (newDifficulty) => {
+      const diff =
+        newDifficulty && DIFFICULTIES[newDifficulty]
+          ? newDifficulty
+          : difficulty;
+
+      const { rows, cols, mines } = DIFFICULTIES[diff];
+
+      setBoard(createBoard(rows, cols, mines));
+      setGameOver(false);
+      setWin(false);
+
+      localStorage.removeItem("savedBoard");
+      localStorage.removeItem("savedDifficulty");
+
+      setTime(0);
+      setTimerRunning(false);
+    },
+    [difficulty]
+  );
 
   useEffect(() => {
     // If a saved board exists AND matches the difficulty, load it instead of resetting
