@@ -10,12 +10,20 @@ export default function Board({
   const smallscreen = typeof window !== "undefined" && window.innerWidth < 600;
 
   return (
-    <div
-      className={`mt-4 max-h-[80vh] overflow-auto p-2 border rounded-lg shadow-inner
-        ${win ? "bg-green-100" : "bg-gray-50"} ${
-        gameOver ? "bg-red-100" : "bg-gray-50"
-      }`}
-    >
+    <>
+      <style>
+        {`
+          .longpress-flash {
+            background-color: rgba(255, 215, 0, 0.6) !important;
+          }
+        `}
+      </style>
+      <div
+        className={`mt-4 max-h-[80vh] overflow-auto p-2 border rounded-lg shadow-inner
+          ${win ? "bg-green-100" : "bg-gray-50"} ${
+          gameOver ? "bg-red-100" : "bg-gray-50"
+        }`}
+      >
       {board.map((row, rIdx) => (
         <div className="flex justify-center" key={rIdx}>
           {row.map((cell, cIdx) => (
@@ -52,7 +60,16 @@ export default function Board({
                 const timeout = setTimeout(() => {
                   toggleFlag(e, rIdx, cIdx);
                   e.target.longPressTriggered = true;
+
+                  // Haptic feedback
                   if (navigator.vibrate) navigator.vibrate(50);
+
+                  // Visual flash feedback
+                  const el = e.target;
+                  el.classList.add("longpress-flash");
+                  setTimeout(() => {
+                    el.classList.remove("longpress-flash");
+                  }, 150);
                 }, 500);
                 e.target.longPressTimeout = timeout;
               }}
@@ -104,6 +121,7 @@ export default function Board({
           ))}
         </div>
       ))}
-    </div>
+      </div>
+    </>
   );
 }
