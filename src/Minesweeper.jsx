@@ -166,7 +166,9 @@ export default function Minesweeper() {
     setTimerRunning(false);
   }, [difficulty]);
 
-  const remainingFlags = MINES - board.flat().filter((c) => c.flagged).length;
+  const remainingFlags = win
+    ? 0
+    : MINES - board.flat().filter((c) => c.flagged).length;
 
   return (
     <div className="flex flex-col items-center gap-4 p-4 text-center select-none">
