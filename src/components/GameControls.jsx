@@ -7,6 +7,8 @@ export default function GameControls({
   resetGame,
   time,
 }) {
+  const isSmallScreen =
+    typeof window !== "undefined" && window.innerWidth < 600;
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
   const formattedTime = `${String(minutes).padStart(2, "0")}:${String(
@@ -42,7 +44,7 @@ export default function GameControls({
           <option value="easy">Easy</option>
           <option value="normal">Normal</option>
           <option value="hard">Hard</option>
-          <option value="asian">Asian</option>
+          {!isSmallScreen && <option value="asian">Asian</option>}
         </select>
 
         <button

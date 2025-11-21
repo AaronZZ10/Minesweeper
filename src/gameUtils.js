@@ -1,11 +1,4 @@
-const DIFFICULTIES = {
-  easy: { rows: 9, cols: 9, mines: 10 },
-  normal: { rows: 14, cols: 18, mines: 40 },
-  hard: { rows: 18, cols: 24, mines: 99 },
-  asian: { rows: 25, cols: 40, mines: 250 },
-};
-
-function createBoard(rows, cols, mines) {
+export function createBoard(rows, cols, mines) {
   const board = Array(rows)
     .fill()
     .map(() =>
@@ -56,6 +49,3 @@ function createBoard(rows, cols, mines) {
 
   return newBoard;
 }
-
-
-export { DIFFICULTIES, createBoard };
