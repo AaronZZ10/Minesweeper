@@ -52,6 +52,7 @@ export default function Board({
                 const timeout = setTimeout(() => {
                   toggleFlag(e, rIdx, cIdx);
                   e.target.longPressTriggered = true;
+                  if (navigator.vibrate) navigator.vibrate(50);
                 }, 500);
                 e.target.longPressTimeout = timeout;
               }}

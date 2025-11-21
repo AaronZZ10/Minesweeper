@@ -5,9 +5,7 @@ import GameControls from "./components/GameControls";
 const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 600;
 
 const DIFFICULTIES = {
-  easy: isSmallScreen
-    ? { rows: 9, cols: 9, mines: 10 }
-    : { rows: 9, cols: 9, mines: 10 },
+  easy: { rows: 9, cols: 9, mines: 10 },
   normal: isSmallScreen
     ? { rows: 18, cols: 14, mines: 40 } // swapped
     : { rows: 14, cols: 18, mines: 40 },
@@ -18,7 +16,6 @@ const DIFFICULTIES = {
     ? { rows: 40, cols: 25, mines: 250 } // swapped
     : { rows: 25, cols: 40, mines: 250 },
 };
-
 
 export default function Minesweeper() {
   const [difficulty, setDifficulty] = useState(
