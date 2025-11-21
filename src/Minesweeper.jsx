@@ -20,8 +20,18 @@ export default function Minesweeper() {
   });
   const [gameOver, setGameOver] = useState(false);
   const [win, setWin] = useState(false);
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(localStorage.getItem("savedBoard") ? parseInt(localStorage.getItem("savedTime")) || 0 : 0);
   const [timerRunning, setTimerRunning] = useState(false);
+  const [lastClicked, setLastClicked] = useState(null);
+
+  useEffect(() => {
+    if (!gameOver && !win) {
+      localStorage.setItem("savedTime", time.toString());
+    }
+    if (gameOver || win) {
+      localStorage.removeItem("savedTime");
+    }
+  }, [time, gameOver, win]);
 
   useEffect(() => {
     if (!gameOver && !win) {
@@ -64,6 +74,7 @@ export default function Minesweeper() {
     if (cell.mine) {
       setTimerRunning(false);
       setTime(0);
+      setLastClicked({ r, c });
       setGameOver(true);
       setBoard(newBoard);
       return;
@@ -96,6 +107,7 @@ export default function Minesweeper() {
       }
     }
 
+    setLastClicked({ r, c });
     setBoard(newBoard);
   };
 
@@ -175,6 +187,7 @@ export default function Minesweeper() {
         win={win}
         revealCell={revealCell}
         toggleFlag={toggleFlag}
+        lastClicked={lastClicked}
       />
     </div>
   );

@@ -3,15 +3,15 @@ export default function GameControls({ gameOver, win, remainingFlags, difficulty
     <div className="flex flex-col items-center gap-2 p-3 max-w-xl">
       {/* Top row: Status + Mine count */}
       <div className="flex flex-wrap items-center justify-center gap-4">
-        <div className="text-lg font-semibold">
+        <div className="text-lg font-semibold w-32 text-center">
           {gameOver && <div className="text-red-600">💀 Game Over</div>}
           {win && <div className="text-green-600">🎉 You Win!</div>}
           {!gameOver && !win && <div className="text-gray-700">🙂 Playing</div>}
         </div>
-        <div className="text-gray-700 font-medium">
+        <div className="text-gray-700 font-medium w-24 text-center">
           🚩 {remainingFlags} left
         </div>
-        <div className="text-gray-700 font-medium">
+        <div className="text-gray-700 font-medium w-20 text-center">
           ⏱ {time}s
         </div>
       </div>

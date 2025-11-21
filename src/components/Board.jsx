@@ -5,9 +5,15 @@ export default function Board({
   win,
   revealCell,
   toggleFlag,
+  lastClicked,
 }) {
   return (
-    <div className="mt-4 max-h-[80vh] overflow-auto p-2 border rounded-lg bg-gray-50 shadow-inner">
+    <div
+      className={`mt-4 max-h-[80vh] overflow-auto p-2 border rounded-lg shadow-inner
+        ${win ? "bg-green-100" : "bg-gray-50"} ${
+        gameOver ? "bg-red-100" : "bg-gray-50"
+      }`}
+    >
       {board.map((row, rIdx) => (
         <div className="flex justify-center" key={rIdx}>
           {row.map((cell, cIdx) => (
@@ -25,12 +31,15 @@ export default function Board({
                     ? "bg-gray-100"
                     : "bg-gray-200 hover:bg-gray-300 hover:cursor-pointer"
                 }
+                ${cell.revealed || gameOver || win ? "pointer-events-none" : ""}
                 ${
-                  cell.revealed || gameOver || win
-                    ? "pointer-events-none"
+                  gameOver &&
+                  lastClicked &&
+                  lastClicked.r === rIdx &&
+                  lastClicked.c === cIdx
+                    ? "bg-red-500 text-white"
                     : ""
-                }
-                ${cell.mine && gameOver ? "bg-red-500 text-white" : ""}`}
+                }`}
               // 👇 Fix long press vs tap
               onTouchStart={(e) => {
                 e.persist();
@@ -57,9 +66,35 @@ export default function Board({
                 toggleFlag(e, rIdx, cIdx);
               }}
             >
-              {cell.revealed && !cell.mine && cell.count > 0 && cell.count}
-              {cell.flagged && !gameOver && !cell.revealed && "🚩"}
-              {cell.mine && gameOver && "💣"}
+              {/* If game over (loss) */}
+              {gameOver ? (
+                <>
+                  {/* Correct flag on mine — keep the flag */}
+                  {cell.flagged && cell.mine && "🚩"}
+
+                  {/* Wrong flag — show red cross */}
+                  {cell.flagged && !cell.mine && "❌"}
+
+                  {/* Unflagged mine — show bomb */}
+                  {!cell.flagged && cell.mine && "💣"}
+
+                  {/* Revealed numbered cell */}
+                  {cell.revealed && !cell.mine && cell.count > 0 && cell.count}
+                </>
+              ) : win ? (
+                <>
+                  {/* On win, show all mines with flags */}
+                  {cell.mine && "🚩"}
+                  {cell.revealed && !cell.mine && cell.count > 0 && cell.count}
+                </>
+              ) : (
+                <>
+                  {/* Normal gameplay (not game over) */}
+                  {cell.revealed && !cell.mine && cell.count > 0 && cell.count}
+                  {cell.flagged && !cell.revealed && "🚩"}
+                  {cell.mine && false}
+                </>
+              )}
             </div>
           ))}
         </div>
